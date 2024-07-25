@@ -1,3 +1,4 @@
+/* src/app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,24 +7,96 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --custom-color: #D9D9D9;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
+    --foreground-rgb: #D9D9D9;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: var(--custom-color);
+  background-color: #f0f0f0;
+}
+
+.add-todo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.add-todo-input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.add-todo-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.add-todo-button:hover {
+  background-color: #0056b3;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s;
+}
+
+.todo-item:hover {
+  background-color: #f9f9f9;
+}
+
+.todo-checkbox {
+  margin-right: 10px;
+}
+
+.todo-input {
+  flex-grow: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.todo-task {
+  flex-grow: 1;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.todo-task:hover {
+  text-decoration: underline;
+}
+
+.todo-delete {
+  background: none;
+  border: none;
+  color: #ff6b6b;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.todo-delete:hover {
+  color: #ff4c4c;
 }
 
 @layer utilities {
