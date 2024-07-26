@@ -1,5 +1,8 @@
-interface  type todoType {
-  id: number;
-  task: string;
-  completed: boolean;
-};
+export type todoType = {
+    id: string;
+    title: string;
+    description: string;
+    task: string;
+    inProgress: boolean;
+    completed: boolean;
+}
