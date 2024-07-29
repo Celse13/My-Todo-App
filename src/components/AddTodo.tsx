@@ -1,6 +1,8 @@
+// src/components/AddTodo.tsx
 import { ChangeEvent, FC, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { FaPlus } from "react-icons/fa";
 
 interface Props {
     addTodo: (task: string) => void;
@@ -22,18 +24,20 @@ const AddTodo: FC<Props> = ({ addTodo }) => {
     };
 
     return (
-        <div className="add-todo">
+        <div className="add-todo flex justify-center items-center">
             <input
                 type="text"
                 value={task}
                 onChange={handleTaskChange}
                 placeholder="Add a new task"
-                className="add-todo-input"
+                className="add-todo-input flex-grow focus:outline-none focuse:border-none"
             />
             <button onClick={handleTaskSubmit} className="add-todo-button">
-                Add
+                <div className="flex items-center">
+                    <FaPlus className="icon-white mr-2"/> Add task
+                </div>
             </button>
-            <ToastContainer />
+            <ToastContainer/>
         </div>
     );
 };

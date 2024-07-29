@@ -37,7 +37,7 @@
 
 
 .aside {
-    width: 25%;
+    width: 20%;
     padding: 1.5rem;
     background-color: #f0f0f0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -60,15 +60,18 @@
 }
 
 .aside-button {
-    width: 100%;
-    text-align: left;
+    width: 110%;
     padding: 0.5rem;
+    padding-left: 1.5rem;
     border-radius: 0.25rem;
     background-color: #333;
     color: white;
-    margin-bottom: 0.5rem;
     cursor: pointer;
     transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
 }
 
 .aside-button:hover {
@@ -88,8 +91,9 @@
 }
 
 .main-title {
-    font-size: 3rem;
-    font-weight: 900;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
@@ -99,8 +103,9 @@
 }
 
 .todo-section {
-    width: 100%;
-    max-width: 50rem;
+    display: flex;
+    margin: 0 auto;
+    width: 80%;
     background-color: white;
     border-radius: 0.5rem;
     padding: 1.5rem;
@@ -110,13 +115,16 @@
 
 
 .todo-item {
-    padding: 1rem;
-    background-color: #f8f8f8;
+    width: 100%;
+    background-color: white;
     border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 1rem;
+    box-shadow: none !important;
+    border-bottom: 1px solid #ccc;
 }
 
+.shadow-md {
+    box-shadow: none;
+}
 
 .todo-timer {
     color: #888;
@@ -165,5 +173,98 @@
 }
 
 
+.hamburger-button {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+}
 
 
+.todo-controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.todo-button {
+    padding: 0.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.todo-button:hover {
+    background-color: #f0f0f0;
+}
+
+.todo-start {
+    color: #28a745; /* Green color for start */
+}
+
+.todo-delete {
+    color: #dc3545; /* Red color for delete */
+}
+
+
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: none !important;
+    border-bottom: 1px solid #ccc;
+    padding: 0.5rem; /* Adjust padding as needed */
+}
+
+.todo-controls {
+    display: flex;
+    gap: 1.5rem;
+}
+
+
+.todo-button {
+    padding: 0.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1.2rem; /* Increase icon size */
+}
+
+.todo-button:hover {
+    background-color: #e0e0e0; /* Change background color on hover */
+}
+
+
+.todo-radio {
+    appearance: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.todo-radio:checked {
+    background-color: #28a745; /* Green color for completed */
+    border-color: #28a745;
+}
+
+.todo-radio:checked::before {
+    content: '\f00c'; /* FontAwesome check icon */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    color: white;
+}

@@ -12,7 +12,6 @@ interface Props {
     editTodo: (id: string, newTask: string) => void;
     startTodo: (id: string) => void;
 }
-
 const Todo: FC<Props> = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo, editTodo, startTodo }) => {
     const [task, setTask] = useState(todo.task);
     const [isEditing, setIsEditing] = useState(false);
@@ -27,14 +26,14 @@ const Todo: FC<Props> = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo
     };
 
     return (
-        <div className="p-4 bg-white shadow-md rounded-lg mb-4">
+        <div className="p-4 bg-white shadow-md rounded-lg mb-4 mt-4">
             <div className="flex items-center mb-2">
                 <div className="flex items-center space-x-2">
                     <input
-                        type="checkbox"
+                        type="radio"
                         checked={todo.completed}
-                        onChange={() => changeTodoCompleted(todo.id, !todo.completed)}
-                        className="todo-checkbox"
+                        onChange={() => changeTodoCompleted(todo.id)}
+                        className="todo-radio"
                     />
                     {isEditing ? (
                         <input
@@ -51,7 +50,7 @@ const Todo: FC<Props> = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo
                         </span>
                     )}
                 </div>
-
+                {todo.inProgress && <span className="text-yellow-500 ml-4">In Progress</span>}
             </div>
         </div>
     );
