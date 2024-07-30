@@ -1,5 +1,6 @@
 "use client";
-import { ChangeEvent, FC, useState } from "react";
+
+import { ChangeEvent, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { FaPlus } from "react-icons/fa";
@@ -9,7 +10,7 @@ interface Props {
     addTodo: (task: string) => void;
 }
 
-const AddTodo: FC<Props> = ({ addTodo }) => {
+const AddTodo = ({ addTodo }: Props) => {
     const [task, setTask] = useState("");
 
     const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -19,8 +20,7 @@ const AddTodo: FC<Props> = ({ addTodo }) => {
     const handleTaskSubmit = async () => {
         if (task.trim()) {
             try {
-                const id = Date.now();
-                // const newTodo = await createTodo(id, task);
+                const newTodo = await createTodo(task);
                 addTodo(newTodo.task);
                 setTask("");
                 toast.success("Task added successfully!");

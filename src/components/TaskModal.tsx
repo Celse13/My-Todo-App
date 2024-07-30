@@ -1,4 +1,3 @@
-// src/components/TaskModal.tsx
 import { FC, useState } from "react";
 
 interface TaskModalProps {

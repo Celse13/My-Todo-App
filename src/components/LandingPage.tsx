@@ -8,6 +8,7 @@ import todoAppImage from '@/public/todo-app.jpg';
 
 const LandingPage = () => {
     const [isLogin, setIsLogin] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -16,7 +17,7 @@ const LandingPage = () => {
             </div>
             <div className="w-1/2 p-8 flex flex-col items-center">
                 <h1 className="text-2xl mb-8 text-center">Welcome to My To-Do App!</h1>
-                {isLogin ? <Login /> : <Signup />}
+                {isLogin ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Signup />}
                 <div className="mt-4">
                     Don’t have an account?
                     <span
