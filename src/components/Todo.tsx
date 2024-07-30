@@ -1,8 +1,7 @@
-// src/components/Todo.tsx
 "use client";
-import { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { todoType } from "@/types/todoType";
-import { FaTrash, FaEdit, FaPlay } from "react-icons/fa";
+import { FaTrash, FaEdit, FaPlay, FaPause } from "react-icons/fa";
 
 interface Props {
     todo: todoType;
@@ -13,7 +12,7 @@ interface Props {
     startTodo: (id: string) => void;
 }
 
-const Todo: FC<Props> = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo, editTodo, startTodo }) => {
+const Todo = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo, editTodo, startTodo }: Props) => {
     const [task, setTask] = useState(todo.task);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -26,9 +25,13 @@ const Todo: FC<Props> = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo
         setIsEditing(false);
     };
 
+    const handleStartPauseClick = () => {
+        startTodo(todo.id);
+    };
+
     return (
         <div className="p-4 bg-white shadow-md rounded-lg mb-4 mt-4">
-            <div className="flex items-center mb-2">
+            <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">
                     <input
                         type="radio"
@@ -43,15 +46,23 @@ const Todo: FC<Props> = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo
                             onChange={handleTaskChange}
                             onBlur={handleTaskSubmit}
                             autoFocus
-                            className="todo-input border rounded px-2 py-1"
+                            className="todo-input px-2 py-1"
                         />
                     ) : (
                         <span onClick={() => setIsEditing(true)} className="todo-task cursor-pointer mr-4">
                             {task}
                         </span>
                     )}
+                    {todo.inProgress && <span className="text-yellow-500 ml-4">In Progress</span>}
                 </div>
-                {todo.inProgress && <span className="text-yellow-500 ml-4">In Progress</span>}
+                <div className="todo-controls flex space-x-2">
+                    <button className="todo-button todo-start mr-2" onClick={handleStartPauseClick}>
+                        {todo.inProgress ? <FaPause /> : <FaPlay />}
+                    </button>
+                    <button className="todo-button todo-delete" onClick={() => deleteTodo(todo.id)}>
+                        <FaTrash />
+                    </button>
+                </div>
             </div>
         </div>
     );

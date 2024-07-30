@@ -1,6 +1,5 @@
-// src/components/Login.tsx
 import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Correct import
+import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';

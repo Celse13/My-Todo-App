@@ -17,7 +17,6 @@ export const createTodo = async (task: string) => {
     task,
     completed: false,
   };
-  // Assuming `db` is your database instance and `todoSchema` is your table schema
   await db.insert(todoSchema).values(newTodo);
   return newTodo;
 };
