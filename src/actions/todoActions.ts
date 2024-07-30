@@ -18,6 +18,7 @@ export const createTodo = async (task: string) => {
     completed: false,
   };
   await db.insert(todoSchema).values(newTodo);
+  revalidatePath("/");
   return newTodo;
 };
 
