@@ -1,8 +1,8 @@
 // src/components/Todo.tsx
 "use client";
 import { ChangeEvent, FC, useState } from "react";
-import { todoType } from "@/types/todoType.ts";
-import { FaTrash, FaEdit, FaPlay } from "react-icons/fa"; // Import the icons from react-icons
+import { todoType } from "@/types/todoType";
+import { FaTrash, FaEdit, FaPlay } from "react-icons/fa";
 
 interface Props {
     todo: todoType;
@@ -12,6 +12,7 @@ interface Props {
     editTodo: (id: string, newTask: string) => void;
     startTodo: (id: string) => void;
 }
+
 const Todo: FC<Props> = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo, editTodo, startTodo }) => {
     const [task, setTask] = useState(todo.task);
     const [isEditing, setIsEditing] = useState(false);
@@ -32,7 +33,7 @@ const Todo: FC<Props> = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo
                     <input
                         type="radio"
                         checked={todo.completed}
-                        onChange={() => changeTodoCompleted(todo.id)}
+                        onChange={() => changeTodoCompleted(todo.id, !todo.completed)}
                         className="todo-radio"
                     />
                     {isEditing ? (
@@ -55,6 +56,5 @@ const Todo: FC<Props> = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo
         </div>
     );
 };
-
 
 export default Todo;

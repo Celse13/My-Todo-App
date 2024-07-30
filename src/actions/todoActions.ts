@@ -1,42 +1,39 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { v4 as uuidv4 } from 'uuid';
+import { eq, not } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import db from "@/database/drizzle";
 import { todoSchema } from "@/database/schema";
 
-// const todoActions = {
-//     async getTodos() {
-//         return await db.select().from(todoSchema);
-//     },
-//
-//     async getTodoById(id: string) {
-//         return await db.select().from(todoSchema).where(eq(todoSchema.id, id));
-//     },
-//
-//     async createTodo(text: string) {
-//         await db.insert(todoSchema).values({ text });
-//         revalidatePath("/");
-//     },
-//
-//     async updateTodo(id: string, text: string, done: boolean) {
-//         await db.update(todoSchema).set({ text, done }).where(eq(todoSchema.id, id));
-//         revalidatePath("/");
-//     },
-//
-//     async deleteTodo(id: string) {
-//         await db.delete(todoSchema).where(eq(todoSchema.id, id));
-//         revalidatePath("/");
-//     }
-// };
-//
-// export { todoActions };
+export const getTodos = async () => {
+  const data = await db.select().from(todoSchema);
+  return data;
+};
+
+export const createTodo = async (task: string) => {
+  const newTodo = {
+    id: uuidv4(),
+    task,
+    completed: false,
+  };
+  // Assuming `db` is your database instance and `todoSchema` is your table schema
+  await db.insert(todoSchema).values(newTodo);
+  return newTodo;
+};
 
 
+export const deleteTodo = async (id: string) => {
+  await db.delete(todoSchema).where(eq(todoSchema.id, id));
+  revalidatePath("/");
+};
 
-export const createTodo = async (id: number, task: string) => {
-    await db.insert(todoSchema).values({
-        id: id,
-        task: task,
-    });
+export const editTodo = async (id: string, task: string) => {
+  await db
+    .update(todoSchema)
+    .set({
+      task: task,
+    })
+    .where(eq(todoSchema.id, id));
+  revalidatePath("/");
 };
