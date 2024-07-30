@@ -27,12 +27,10 @@ export const deleteTodo = async (id: string) => {
   revalidatePath("/");
 };
 
-export const editTodo = async (id: string, task: string) => {
+export const editTodo = async (id: string, updates: Partial<{ task: string; completed: boolean }>) => {
   await db
-    .update(todoSchema)
-    .set({
-      task: task,
-    })
-    .where(eq(todoSchema.id, id));
+      .update(todoSchema)
+      .set(updates)
+      .where(eq(todoSchema.id, id));
   revalidatePath("/");
 };

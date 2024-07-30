@@ -6,10 +6,7 @@ import TodoList from "@/components/TodoList";
 import Aside from "@/components/Aside";
 import { FaUserCircle } from "react-icons/fa";
 import { todoType } from "@/types/todoType";
-import { createTodo, getTodos } from "@/actions/todoActions";
-import { editTodo as editTodoOnServer } from "@/actions/todoActions";
-import { deleteTodo as deleteTodoOnServer } from "@/actions/todoActions";
-
+import { createTodo, getTodos, editTodo as editTodoOnServer, deleteTodo as deleteTodoOnServer } from "@/actions/todoActions";
 import { ClipLoader } from "react-spinners";
 
 interface HomeProps {
@@ -23,6 +20,7 @@ export default function Home({ initialTodos }: HomeProps) {
   const [deletionMessage, setDeletionMessage] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
 
@@ -55,8 +53,19 @@ export default function Home({ initialTodos }: HomeProps) {
     setTodos(todos.map(todo => todo.id === id ? { ...todo, task } : todo));
   };
 
-  const changeTodoCompleted = (id: string) => {
-    setTodos(todos.map(todo => todo.id === id ? { ...todo, completed: !todo.completed } : todo));
+  const changeTodoCompleted = async (id: string) => {
+    setIsUpdating(true);
+    try {
+      const todo = todos.find(todo => todo.id === id);
+      if (todo) {
+        await editTodoOnServer(id, { completed: !todo.completed });
+        setTodos(todos.map(todo => todo.id === id ? { ...todo, completed: !todo.completed } : todo));
+      }
+    } catch (error) {
+      console.error("Failed to update todo:", error);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const changeTodoInProgress = (id: string, inProgress: boolean) => {
@@ -87,7 +96,7 @@ export default function Home({ initialTodos }: HomeProps) {
 
   const editTodo = async (id: string, newTask: string) => {
     try {
-      await editTodoOnServer(id, newTask);
+      await editTodoOnServer(id, { task: newTask });
       setTodos(todos.map(todo => todo.id === id ? { ...todo, task: newTask } : todo));
     } catch (error) {
       console.error("Failed to edit todo:", error);
@@ -133,6 +142,11 @@ export default function Home({ initialTodos }: HomeProps) {
                 </div>
               )}
               {isDeleting && (
+                <div className="flex justify-center items-center mb-4">
+                  <ClipLoader size={30} color={"#123abc"} loading={true} />
+                </div>
+              )}
+              {isUpdating && (
                 <div className="flex justify-center items-center mb-4">
                   <ClipLoader size={30} color={"#123abc"} loading={true} />
                 </div>
