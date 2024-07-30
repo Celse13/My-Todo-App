@@ -1,7 +1,7 @@
 // src/components/Todo.tsx
 "use client";
 import { ChangeEvent, FC, useState } from "react";
-import { todoType } from "@/types/todoType";
+import { todoType } from "@/types/todoType.ts";
 import { FaTrash, FaEdit, FaPlay } from "react-icons/fa"; // Import the icons from react-icons
 
 interface Props {

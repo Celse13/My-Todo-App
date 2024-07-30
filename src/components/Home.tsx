@@ -1,13 +1,12 @@
 "use client";
 
-
 import AddTodo from "@/components/AddTodo";
 import TodoList from "@/components/TodoList";
 import TaskModal from "@/components/TaskModal";
 import Aside from "@/components/Aside";
-import MainHeader from "@/components/MainHeader";
 import { useState } from "react";
-import { todoType } from "@/types/todoType";
+import { todoType } from "@/types/todoType.ts";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Home() {
     const [todos, setTodos] = useState<todoType[]>([]);
@@ -18,9 +17,10 @@ export default function Home() {
         setIsAsideVisible(!isAsideVisible);
     };
 
-    const addTodo = (task: string, description: string) => {
-        const newTodo = { id: Date.now().toString(), title: "", description, task, completed: false, inProgress: false };
+    const addTodo = async (task: string, description: string) => {
+        const newTodo = { id: Date.now().toString(), task, completed: false };
         setTodos([...todos, newTodo]);
+        await addTodoToDB(newTodo.id, task);
     };
 
     const changeTodoTask = (id: string, task: string) => {
@@ -40,7 +40,12 @@ export default function Home() {
     };
 
     const editTodo = (id: string, newTitle: string, newDescription: string, newTask: string) => {
-        setTodos(todos.map(todo => todo.id === id ? { ...todo, title: newTitle, description: newDescription, task: newTask } : todo));
+        setTodos(todos.map(todo => todo.id === id ? {
+            ...todo,
+            title: newTitle,
+            description: newDescription,
+            task: newTask
+        } : todo));
     };
 
     const startTodo = (id: string) => {
@@ -59,11 +64,17 @@ export default function Home() {
 
     return (
         <main className="flex flex-col min-h-screen">
-            <div className="flex-grow flex">
+            <div className="flex">
                 <Aside isAsideVisible={isAsideVisible} toggleAside={toggleAside} />
-                <div className="main-content">
-                    <MainHeader />
-                    <section className="todo-section flex justify-center items-center">
+                <div className={`main-content w-full ${isAsideVisible ? 'ml-64' : ''}`}>
+                    <header className="main-header text-center mt-12">
+                        <div className="flex flex-col justify-end items-center mb-4">
+                            <FaUserCircle className="text-4xl mb-2" />
+                            <span className="text-lg font-semibold">Celse Honore</span>
+                        </div>
+                        <h5 className="main-title text-2xl font-bold mt-4">MY TASKS</h5>
+                    </header>
+                    <section className="flex mx-auto w-3/4 bg-white rounded-lg p-6 shadow-md justify-center items-center">
                         <div className="flex-grow max-w-4xl mx-auto">
                             <AddTodo addTodo={addTodo} />
                             <TodoList
@@ -79,11 +90,6 @@ export default function Home() {
                     </section>
                 </div>
             </div>
-            <TaskModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onAddTask={addTodo}
-            />
         </main>
     );
 }

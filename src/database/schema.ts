@@ -4,10 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 
 const todoSchema = pgTable("todoTasks", {
-    id: uuid({
-        primaryKey: true,
-        default: uuidv4,
-    }),
+    id: uuid("id").default(uuidv4()).primaryKey(),
     task: text("task").notNull(),
     completed: boolean("completed").default(false).notNull(),
 });

@@ -1,8 +1,5 @@
 export type todoType = {
     id: string;
-    title: string;
-    description: string;
     task: string;
-    inProgress: boolean;
     completed: boolean;
 }

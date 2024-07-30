@@ -1,8 +1,9 @@
-// src/components/AddTodo.tsx
+"use client";
 import { ChangeEvent, FC, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { FaPlus } from "react-icons/fa";
+import { createTodo } from "@/actions/todoActions";
 
 interface Props {
     addTodo: (task: string) => void;
@@ -15,13 +16,19 @@ const AddTodo: FC<Props> = ({ addTodo }) => {
         setTask(e.target.value);
     };
 
-    const handleTaskSubmit = () => {
+    const handleTaskSubmit = async () => {
         if (task.trim()) {
-            addTodo(task);
-            setTask("");
-            toast.success("Task added successfully!");
+            try {
+                const id = Date.now();
+                // const newTodo = await createTodo(id, task);
+                addTodo(newTodo.task);
+                setTask("");
+                toast.success("Task added successfully!");
+            } catch (error) {
+                toast.error("Failed to add task.");
+            }
         }
-    };
+    }
 
     return (
         <div className="add-todo flex justify-center items-center">
