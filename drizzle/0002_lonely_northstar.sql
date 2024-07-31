@@ -1,0 +1,1 @@
+ALTER TABLE "todoTasks" ALTER COLUMN "id" SET DEFAULT 'ec63f7fa-79cd-49e7-b845-c88f4efeef5a';

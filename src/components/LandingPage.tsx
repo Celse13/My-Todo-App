@@ -44,13 +44,27 @@ const LandingPage = ({ setIsAuthenticated }) => {
                     isLogin ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Signup />
                 )}
                 <div className="mt-4">
-                    Don’t have an account?
-                    <span
-                        onClick={() => setIsLogin(false)}
-                        className="text-blue-500 cursor-pointer ml-1"
-                    >
-                        Signup
-                    </span>
+                    {isLogin ? (
+                        <>
+                            Don’t have an account?
+                            <span
+                                onClick={() => setIsLogin(false)}
+                                className="text-blue-500 cursor-pointer ml-1"
+                            >
+                                Signup
+                            </span>
+                        </>
+                    ) : (
+                        <>
+                            Already have an account?
+                            <span
+                                onClick={() => setIsLogin(true)}
+                                className="text-blue-500 cursor-pointer ml-1"
+                            >
+                                Login
+                            </span>
+                        </>
+                    )}
                 </div>
                 <div className="mt-4">
                     <button onClick={handleGoogleSignIn} className="text-blue-500 cursor-pointer ml-1">

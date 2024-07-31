@@ -1,0 +1,66 @@
+{
+  "id": "cf87b1d0-075a-47f3-a12c-d7e2479d85bf",
+  "prevId": "2bb3bf55-dc92-412d-9b45-3370c12996c4",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.todoTasks": {
+      "name": "todoTasks",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "'e5b4ade2-552e-46f3-9905-e7cb1314d14c'"
+        },
+        "task": {
+          "name": "task",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "completed": {
+          "name": "completed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "todoTasks_userId_users_id_fk": {
+          "name": "todoTasks_userId_users_id_fk",
+          "tableFrom": "todoTasks",
+          "tableTo": "users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

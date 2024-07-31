@@ -21,7 +21,7 @@ dotenv.config({ path: ".env.local" });
 const DATABASE_URL=process.env.DATABASE_URL || ""
 
 export default defineConfig({
-    schema: "./src/database/todoSchema.ts",
+    schema: ["./src/database/todoSchema.ts", "./src/database/userSchema.ts"],
     out: "./drizzle",
     dialect: "postgresql",
     dbCredentials: {
