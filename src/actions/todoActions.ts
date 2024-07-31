@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { eq, not } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import db from "@/database/drizzle";
-import { todoSchema } from "@/database/schema";
+import { todoSchema } from "@/database/todoSchema";
 
 export const getTodos = async () => {
   const data = await db.select().from(todoSchema);

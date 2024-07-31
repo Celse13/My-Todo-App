@@ -6,6 +6,9 @@ import { Form } from '@/components/ui/form';
 import { GoogleLogin } from '@react-oauth/google';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const Login = ({ setIsAuthenticated }) => {
     const [email, setEmail] = useState('');
@@ -24,7 +27,7 @@ const Login = ({ setIsAuthenticated }) => {
 
     return (
         <>
-            <Form className="login-form">
+            <Form>
                 <div className="form-item mb-4">
                     <Input
                         type="email"
@@ -43,7 +46,7 @@ const Login = ({ setIsAuthenticated }) => {
                         className="w-96"
                     />
                 </div>
-                <Button onClick={handleLogin} className="submit-button">
+                <Button  onClick={handleLogin} className="submit-button w-96">
                     Login
                 </Button>
                 <div className="separator">
@@ -52,7 +55,6 @@ const Login = ({ setIsAuthenticated }) => {
                     <hr className="flex-1" />
                 </div>
                 <GoogleLogin
-                    className="w-96"
                     onSuccess={credentialResponse => {
                         toast.success('Logged in with Google');
                         setIsAuthenticated(true);
@@ -61,6 +63,7 @@ const Login = ({ setIsAuthenticated }) => {
                     onError={() => {
                         toast.error('Google login failed');
                     }}
+
                 />
             </Form>
             <ToastContainer />
