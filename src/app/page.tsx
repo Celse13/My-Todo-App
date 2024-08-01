@@ -9,7 +9,7 @@ export default function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     return (
-        < Home />
+        < Home initialTodos={[]} />
 
         // <GoogleOAuthProvider clientId="">
         //     {isAuthenticated ? (

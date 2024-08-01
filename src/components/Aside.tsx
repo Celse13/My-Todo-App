@@ -1,6 +1,6 @@
 import { FaUserCircle, FaSignOutAlt, FaHome, FaTasks, FaCheckCircle, FaBars } from "react-icons/fa";
 
-const Aside = ({ isAsideVisible, toggleAside }) => {
+const Aside = ({ isAsideVisible, toggleAside }:{ isAsideVisible:any; toggleAside:any }) => {
   return (
       <>
         <button

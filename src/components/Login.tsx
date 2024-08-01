@@ -7,7 +7,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const Login = ({ setIsAuthenticated }) => {
+const Login = ({ setIsAuthenticated }:{setIsAuthenticated: any}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
@@ -24,7 +24,7 @@ const Login = ({ setIsAuthenticated }) => {
 
     return (
         <>
-            <Form className="login-form">
+            <form>
                 <div className="form-item mb-4">
                     <Input
                         type="email"
@@ -52,7 +52,7 @@ const Login = ({ setIsAuthenticated }) => {
                     <hr className="flex-1" />
                 </div>
                 <GoogleLogin
-                    className="w-96"
+                    
                     onSuccess={credentialResponse => {
                         toast.success('Logged in with Google');
                         setIsAuthenticated(true);
@@ -62,7 +62,7 @@ const Login = ({ setIsAuthenticated }) => {
                         toast.error('Google login failed');
                     }}
                 />
-            </Form>
+            </form>
             <ToastContainer />
         </>
     );

@@ -1,5 +1,6 @@
 {
   "name": "To-Do App",
+  "type": "module",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -17,7 +18,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@react-oauth/google": "^0.12.1",
     "@shadcn/ui": "^0.0.4",
-    "@tanstack/react-query": "^5.51.15",
+    "@tanstack/react-query": "^5.51.18",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
