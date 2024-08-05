@@ -7,8 +7,8 @@ import db from "@/database/drizzle";
 import { todos } from "@/database/schema";
 import {todoType} from "@/types/todoType";
 
-export const getTodos = async (): Promise<todoType[]> => {
-  const todosFromDb = await db.select().from(todos);
+export const getTodos = async (userEmail: string): Promise<todoType[]> => {
+  const todosFromDb = await db.select().from(todos).where(eq(todos.userEmail, userEmail));
   return todosFromDb.map(todo => ({
     id: todo.id,
     task: todo.task,
@@ -39,6 +39,15 @@ export const editTodo = async (id: string, updates: Partial<{ task: string; comp
   await db
       .update(todos)
       .set(updates)
+      .where(eq(todos.id, id));
+  revalidatePath("/");
+};
+
+
+export const toggleTodoInProgress = async (id: string, inProgress: boolean) => {
+  await db
+      .update(todos)
+      .set({ inProgress })
       .where(eq(todos.id, id));
   revalidatePath("/");
 };

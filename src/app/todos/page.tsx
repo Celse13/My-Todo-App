@@ -6,10 +6,11 @@ import TodoList from "@/components/TodoList";
 import Aside from "@/components/Aside";
 import { FaUserCircle } from "react-icons/fa";
 import { todoType } from "@/types/todoType";
-import { createTodo, getTodos, editTodo as editTodoOnServer, deleteTodo as deleteTodoOnServer } from "@/actions/todoActions";
+import { toggleTodoInProgress, getTodos, editTodo as editTodoOnServer, deleteTodo as deleteTodoOnServer } from "@/actions/todoActions";
 import { ClipLoader } from "react-spinners";
 import { useSession } from "next-auth/react";
-import Spinner from '@/components/Spinner'
+import Spinner from '@/components/Spinner';
+import { SessionProvider } from 'next-auth/react';
 
 export default function Home() {
     const [todos, setTodos] = useState<todoType[]>([]);
@@ -21,22 +22,29 @@ export default function Home() {
     const [isUpdating, setIsUpdating] = useState(false);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
-    const { data } = useSession();
-    const userEmail = data?.user?.email ?? '';
+    const { data, status } = useSession();
+    const userEmail = data?.user?.email;
 
     useEffect(() => {
+        if (status === 'loading') {
+            return;
+        }
+
         const fetchTodos = async () => {
             try {
-                const todosFromDb: todoType[] = await getTodos();
-                setTodos(todosFromDb);
+                if (userEmail) {
+                    const todosFromDb: todoType[] = await getTodos(userEmail);
+                    setTodos(todosFromDb);
+                }
             } catch (error) {
                 console.error("Failed to fetch todos:", error);
             } finally {
                 setLoading(false);
             }
         };
+
         fetchTodos();
-    }, []);
+    }, [status, userEmail]);
 
     const toggleAside = () => {
         setIsAsideVisible(!isAsideVisible);
@@ -44,15 +52,6 @@ export default function Home() {
 
     const addTodo = async (task: string) => {
         setIsCreating(true);
-        try {
-            const userEmail = 'rugiracelse13@gmail.com';
-            const newTodo = await createTodo(task, userEmail);
-            setTodos([...todos, newTodo]);
-        } catch (error) {
-            console.error("Failed to add todo:", error);
-        } finally {
-            setIsCreating(false);
-        }
     };
 
     const changeTodoTask = (id: string, task: string) => {
@@ -74,9 +73,9 @@ export default function Home() {
         }
     };
 
-    const changeTodoInProgress = (id: string, inProgress: boolean) => {
-        setTodos(todos.map(todo => todo.id === id ? { ...todo, inProgress } : todo));
-    };
+    // const changeTodoInProgress = (id: string, inProgress: boolean) => {
+    //     setTodos(todos.map(todo => todo.id === id ? { ...todo, inProgress } : todo));
+    // };
 
     const confirmDeleteTodo = (id: string) => {
         setTodoToDelete(id);
@@ -113,6 +112,20 @@ export default function Home() {
         setTodos(todos.map(todo => todo.id === id ? { ...todo, inProgress: !todo.inProgress } : todo));
     };
 
+
+    const changeTodoInProgress = async (id: string, inProgress: boolean) => {
+        setIsUpdating(true);
+        try {
+            await toggleTodoInProgress(id, inProgress);
+            setTodos(todos.map(todo => todo.id === id ? { ...todo, inProgress } : todo));
+        } catch (error) {
+            console.error("Failed to update todo in progress status", error);
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
+
     if (loading) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -124,7 +137,7 @@ export default function Home() {
     }
 
     return (
-
+        <SessionProvider>
             <main className="flex flex-col min-h-screen">
                 <div className="flex">
                     <Aside isAsideVisible={isAsideVisible} toggleAside={toggleAside} />
@@ -167,6 +180,8 @@ export default function Home() {
                                     deleteTodo={confirmDeleteTodo}
                                     editTodo={editTodo}
                                     startTodo={startTodo}
+                                    changeTodoInProgress={changeTodoInProgress}
+
                                 />
                             </div>
                         </section>
@@ -195,5 +210,6 @@ export default function Home() {
                     </div>
                 )}
             </main>
+        </SessionProvider>
     );
 }

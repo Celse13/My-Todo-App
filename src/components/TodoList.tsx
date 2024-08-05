@@ -17,7 +17,8 @@ const TodoList = ({
   changeTodoCompleted,
   deleteTodo,
   editTodo,
-  startTodo
+  startTodo,
+  changeTodoInProgress,
 }: TodoListProps) => {
   return (
     <div className="todo-list">
@@ -30,6 +31,7 @@ const TodoList = ({
             deleteTodo={deleteTodo}
             editTodo={editTodo}
             startTodo={startTodo}
+            changeTodoInProgress={changeTodoInProgress}
           />
         </div>
       ))}

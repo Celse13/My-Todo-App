@@ -3,16 +3,18 @@ import { ChangeEvent, useState } from "react";
 import { todoType } from "@/types/todoType";
 import { FaTrash, FaEdit, FaPlay, FaPause } from "react-icons/fa";
 
+
 interface Props {
-    todo: todoType;
+    todo: todoType[];
     changeTodoTask: (id: string, task: string) => void;
-    changeTodoCompleted: (id: string, completed: boolean) => void;
+    changeTodoCompleted: (id: string) => void;
     deleteTodo: (id: string) => void;
     editTodo: (id: string, newTask: string) => void;
     startTodo: (id: string) => void;
+    changeTodoInProgress: (id: string) => void;
 }
 
-const Todo = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo, editTodo, startTodo }: Props) => {
+const Todo = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo, editTodo, startTodo, changeTodoInProgress }: Props) => {
     const [task, setTask] = useState(todo.task);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -25,9 +27,10 @@ const Todo = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo, editTodo,
         setIsEditing(false);
     };
 
-    const handleStartPauseClick = () => {
-        startTodo(todo.id);
+    const handleStartPauseClick = async () => {
+        await changeTodoInProgress(todo.id, !todo.inProgress);
     };
+
 
     return (
         <div className="p-4 bg-white shadow-md rounded-lg mb-4 mt-4">
