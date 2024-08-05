@@ -13,23 +13,23 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const router = useRouter();
     const { status } = useSession();
-    
-        
+
+    // if (status === 'loading') {
+    //     return <Spinner />;
+    // }
+
     if (status === 'authenticated') {
         router.push('/todos');
     }
 
     const handleLoginWithGoogle = () => {
-        signIn('google');
+        signIn();
     };
 
     return (
 
         <>
-                <Button
-                onClick={() => signIn('google') }
-                className='w-96'
-                >
+                <Button onClick={handleLoginWithGoogle}>
                     Sign in with Google
                 </Button>
             <ToastContainer/>
@@ -38,4 +38,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+// export default Login;

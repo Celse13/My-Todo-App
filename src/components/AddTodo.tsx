@@ -20,7 +20,8 @@ const AddTodo = ({ addTodo }: Props) => {
     const handleTaskSubmit = async () => {
         if (task.trim()) {
             try {
-                const newTodo = await createTodo(task);
+                const userEmail = 'rugiracelse13@gmal.com'
+                const newTodo = await createTodo(task, userEmail);
                 addTodo(newTodo.task);
                 setTask("");
                 toast.success("Task added successfully!");

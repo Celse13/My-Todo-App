@@ -1,36 +1,44 @@
 "use server";
 
 import { v4 as uuidv4 } from 'uuid';
-import { eq, not } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import db from "@/database/drizzle";
-import { todoSchema } from "@/database/schema";
+import { todos } from "@/database/schema";
+import {todoType} from "@/types/todoType";
 
-export const getTodos = async () => {
-  const data = await db.select().from(todoSchema);
-  return data;
+export const getTodos = async (): Promise<todoType[]> => {
+  const todosFromDb = await db.select().from(todos);
+  return todosFromDb.map(todo => ({
+    id: todo.id,
+    task: todo.task,
+    completed: todo.completed,
+    inProgress: todo.inProgress,
+  }));
 };
 
-export const createTodo = async (task: string) => {
+export const createTodo = async (task: string, userEmail: string) => {
   const newTodo = {
     id: uuidv4(),
     task,
     completed: false,
+    inProgress: false,
+    userEmail
   };
-  await db.insert(todoSchema).values(newTodo);
+  await db.insert(todos).values(newTodo);
   return newTodo;
 };
 
 
 export const deleteTodo = async (id: string) => {
-  await db.delete(todoSchema).where(eq(todoSchema.id, id));
+  await db.delete(todos).where(eq(todos.id, id));
   revalidatePath("/");
 };
 
 export const editTodo = async (id: string, updates: Partial<{ task: string; completed: boolean }>) => {
   await db
-      .update(todoSchema)
+      .update(todos)
       .set(updates)
-      .where(eq(todoSchema.id, id));
+      .where(eq(todos.id, id));
   revalidatePath("/");
 };
