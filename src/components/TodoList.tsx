@@ -9,6 +9,7 @@ interface TodoListProps {
   deleteTodo: (id: string) => void;
   editTodo: (id: string, newTask: string) => void;
   startTodo: (id: string) => void;
+  changeTodoInProgress: (id: string, inProgress: boolean) => void;
 }
 
 const TodoList = ({

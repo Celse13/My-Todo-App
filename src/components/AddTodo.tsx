@@ -23,6 +23,10 @@ const AddTodo = ({ addTodo }: Props) => {
     const handleTaskSubmit = async () => {
         if (task.trim()) {
             try {
+                if (!userEmail) {
+                    toast.error('User email not available')
+                    return;
+                }
                 const newTodo = await createTodo(task, userEmail);
                 addTodo(newTodo.task);
                 setTask("");

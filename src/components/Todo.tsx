@@ -5,13 +5,13 @@ import { FaTrash, FaEdit, FaPlay, FaPause } from "react-icons/fa";
 
 
 interface Props {
-    todo: todoType[];
+    todo: todoType;
     changeTodoTask: (id: string, task: string) => void;
     changeTodoCompleted: (id: string) => void;
     deleteTodo: (id: string) => void;
     editTodo: (id: string, newTask: string) => void;
     startTodo: (id: string) => void;
-    changeTodoInProgress: (id: string) => void;
+    changeTodoInProgress: (id: string, inProgress: boolean) => void;
 }
 
 const Todo = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo, editTodo, startTodo, changeTodoInProgress }: Props) => {
@@ -39,7 +39,7 @@ const Todo = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo, editTodo,
                     <input
                         type="radio"
                         checked={todo.completed}
-                        onChange={() => changeTodoCompleted(todo.id, !todo.completed)}
+                        onChange={() => changeTodoCompleted(todo.id)}
                         className="todo-radio"
                     />
                     {isEditing ? (
