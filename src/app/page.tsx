@@ -1,13 +1,10 @@
-"use client";
 
-import { useState } from 'react';
 import Login from "@/components/Login";
 import Image from 'next/image';
 import todoAppImage from '../public/todo-app.jpg';
 import { SessionProvider } from 'next-auth/react';
 
 const LandingPage = () => {
-    const [isLogin, setIsLogin] = useState(true);
 
     return (
         <SessionProvider>
@@ -17,7 +14,7 @@ const LandingPage = () => {
                 </div>
                 <div className="w-1/2 p-8 flex flex-col items-center">
                     <h1 className="text-2xl mb-8 text-center">Welcome to My To-Do App!</h1>
-                    {isLogin && <Login />}
+                    <Login />
                 </div>
             </div>
         </SessionProvider>
