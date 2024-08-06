@@ -5,6 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { FaPlus } from "react-icons/fa";
 import { createTodo } from "@/actions/todoActions";
+import { useSession } from "next-auth/react";
 
 interface Props {
     addTodo: (task: string) => void;
@@ -12,6 +13,8 @@ interface Props {
 
 const AddTodo = ({ addTodo }: Props) => {
     const [task, setTask] = useState("");
+    const { data, status } = useSession();
+    const userEmail = data?.user?.email;
 
     const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
         setTask(e.target.value);
@@ -20,7 +23,11 @@ const AddTodo = ({ addTodo }: Props) => {
     const handleTaskSubmit = async () => {
         if (task.trim()) {
             try {
-                const newTodo = await createTodo(task);
+                if (!userEmail) {
+                    toast.error('User email not available')
+                    return;
+                }
+                const newTodo = await createTodo(task, userEmail);
                 addTodo(newTodo.task);
                 setTask("");
                 toast.success("Task added successfully!");
