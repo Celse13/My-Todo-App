@@ -1,41 +1,37 @@
-"use client";
-
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ChangeEvent, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { FaPlus } from "react-icons/fa";
-import { createTodo } from "@/actions/todoActions";
-import { useSession } from "next-auth/react";
+import { addTodo } from "@/components/hooks/TodoQueries";
 
-interface Props {
-    addTodo: (task: string) => void;
-}
-
-const AddTodo = ({ addTodo }: Props) => {
+const AddTodo = () => {
     const [task, setTask] = useState("");
-    const { data, status } = useSession();
-    const userEmail = data?.user?.email;
+    const queryClient = useQueryClient();
+
+    const { mutateAsync: addTodoMutation } = useMutation({
+        mutationFn: addTodo,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['todos'] });
+            toast.success('Task added successfully');
+            setTask('');
+        },
+        onError: () => {
+            toast.error('Error adding task');
+        },
+    });
 
     const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
         setTask(e.target.value);
     };
 
     const handleTaskSubmit = async () => {
-        if (task.trim()) {
-            try {
-                if (!userEmail) {
-                    toast.error('User email not available')
-                    return;
-                }
-                const newTodo = await createTodo(task, userEmail);
-                addTodo(newTodo.task);
-                setTask("");
-                toast.success("Task added successfully!");
-            } catch (error) {
-                toast.error("Failed to add task.");
-            }
+        try {
+            await addTodoMutation(task);
+        } catch (error: any) {
+            console.log(error.message)
         }
-    }
+    };
 
     return (
         <div className="add-todo flex justify-center items-center">

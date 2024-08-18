@@ -3,4 +3,6 @@ export type todoType = {
     task: string;
     completed: boolean;
     inProgress: boolean;
+    userId: string,
+
 }

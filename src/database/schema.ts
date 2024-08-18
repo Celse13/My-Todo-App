@@ -1,8 +1,7 @@
 import { uuid, text, pgTable, boolean, timestamp, integer, primaryKey } from "drizzle-orm/pg-core";
 import { v4 as uuidv4 } from "uuid";
 import { relations } from 'drizzle-orm';
-
-
+import type { AdapterAccountType } from "next-auth/adapters";
 
 
 
@@ -12,7 +11,6 @@ const users = pgTable("users", {
     email: text("email").unique(),
     emailVerified: boolean("emailVerified"),
     image: text("image"),
-    role: text("role"),
 });
 
 const todos = pgTable("todoTasks", {
@@ -49,12 +47,36 @@ const sessionsRelations = relations(sessions, ({ one }) => ({
     })
 }));
 
+const accounts = pgTable(
+    "account",
+    {
+        userId: uuid("userId")
+            .notNull()
+            .references(() => users.id, { onDelete: "cascade" }),
+        type: text("type").$type<AdapterAccountType>().notNull(),
+        provider: text("provider").notNull(),
+        providerAccountId: text("providerAccountId").notNull(),
+        refresh_token: text("refresh_token"),
+        access_token: text("access_token"),
+        expires_at: integer("expires_at"),
+        token_type: text("token_type"),
+        scope: text("scope"),
+        id_token: text("id_token"),
+        session_state: text("session_state"),
+    },
+    (account) => ({
+        compoundKey: primaryKey({
+            columns: [account.provider, account.providerAccountId],
+        }),
+    })
+);
+
 
 const authenticators = pgTable(
     "authenticator",
     {
         credentialID: text("credentialID").notNull().unique(),
-        userId: text("userId")
+        id: uuid("id")
             .notNull()
             .references(() => users.id, { onDelete: "cascade" }),
         providerAccountId: text("providerAccountId").notNull(),
@@ -66,11 +88,11 @@ const authenticators = pgTable(
     },
     (authenticator) => ({
         compositePK: primaryKey({
-            columns: [authenticator.userId, authenticator.credentialID],
+            columns: [authenticator.id, authenticator.credentialID],
         }),
     })
 );
 
 
-export { users, todos, sessions, authenticators };
+export { users, todos, sessions, authenticators, accounts, usersRelations, todosRelations, sessionsRelations };
 

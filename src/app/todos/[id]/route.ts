@@ -12,7 +12,6 @@ export const GET = async (req: NextRequest, { params }: {params: {id: string }})
     }
 }
 
-// Ensure the task property is correctly typed in the PUT handler
 export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
     const { task }: { task: string } = await req.json();
     const returnedTodo = await editTodo(params.id, task);

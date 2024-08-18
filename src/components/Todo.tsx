@@ -18,18 +18,6 @@ const Todo = ({ todo, changeTodoTask, changeTodoCompleted, deleteTodo, editTodo,
     const [task, setTask] = useState(todo.task);
     const [isEditing, setIsEditing] = useState(false);
 
-    const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setTask(e.target.value);
-    };
-
-    const handleTaskSubmit = () => {
-        editTodo(todo.id, task);
-        setIsEditing(false);
-    };
-
-    const handleStartPauseClick = async () => {
-        await changeTodoInProgress(todo.id, !todo.inProgress);
-    };
 
 
     return (

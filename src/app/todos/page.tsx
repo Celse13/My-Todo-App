@@ -25,57 +25,12 @@ export default function Home() {
     const { data, status } = useSession();
     const userEmail = data?.user?.email;
 
-    useEffect(() => {
-        if (status === 'loading') {
-            return;
-        }
 
-        const fetchTodos = async () => {
-            try {
-                if (userEmail) {
-                    const todosFromDb: todoType[] = await getTodos(userEmail);
-                    setTodos(todosFromDb);
-                }
-            } catch (error) {
-                console.error("Failed to fetch todos:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchTodos();
-    }, [status, userEmail]);
 
     const toggleAside = () => {
-        setIsAsideVisible(!isAsideVisible);
-    };
 
-    const addTodo = async (task: string) => {
-        setIsCreating(true);
-    };
 
-    const changeTodoTask = (id: string, task: string) => {
-        setTodos(todos.map(todo => todo.id === id ? { ...todo, task } : todo));
-    };
 
-    const changeTodoCompleted = async (id: string) => {
-        setIsUpdating(true);
-        try {
-            const todo = todos.find(todo => todo.id === id);
-            if (todo) {
-                await editTodoOnServer(id, { completed: !todo.completed });
-                setTodos(todos.map(todo => todo.id === id ? { ...todo, completed: !todo.completed } : todo));
-            }
-        } catch (error) {
-            console.error("Failed to update todo:", error);
-        } finally {
-            setIsUpdating(false);
-        }
-    };
-
-    // const changeTodoInProgress = (id: string, inProgress: boolean) => {
-    //     setTodos(todos.map(todo => todo.id === id ? { ...todo, inProgress } : todo));
-    // };
 
     const confirmDeleteTodo = (id: string) => {
         setTodoToDelete(id);
@@ -137,7 +92,6 @@ export default function Home() {
     }
 
     return (
-        <SessionProvider>
             <main className="flex flex-col min-h-screen">
                 <div className="flex">
                     <Aside isAsideVisible={isAsideVisible} toggleAside={toggleAside} />
@@ -174,7 +128,6 @@ export default function Home() {
                                     </div>
                                 )}
                                 <TodoList
-                                    todos={todos}
                                     changeTodoTask={changeTodoTask}
                                     changeTodoCompleted={changeTodoCompleted}
                                     deleteTodo={confirmDeleteTodo}
@@ -210,6 +163,5 @@ export default function Home() {
                     </div>
                 )}
             </main>
-        </SessionProvider>
     );
 }
