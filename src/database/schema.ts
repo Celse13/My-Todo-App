@@ -50,7 +50,7 @@ const sessionsRelations = relations(sessions, ({ one }) => ({
 const accounts = pgTable(
     "account",
     {
-        userId: uuid("userId")
+        userId: uuid("id")
             .notNull()
             .references(() => users.id, { onDelete: "cascade" }),
         type: text("type").$type<AdapterAccountType>().notNull(),
@@ -89,6 +89,7 @@ const authenticators = pgTable(
     (authenticator) => ({
         compositePK: primaryKey({
             columns: [authenticator.id, authenticator.credentialID],
+            name: "authenticator_id_credentialid_pk"
         }),
     })
 );
