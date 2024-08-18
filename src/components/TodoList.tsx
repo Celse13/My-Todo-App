@@ -3,24 +3,18 @@ import { todoType } from "@/types/todoType";
 import { fetchTodos } from "@/components/hooks/TodoQueries";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/components/Spinner";
+import { TodoFunctions } from "@/types/todoFunctions";
 
-interface TodoListProps {
-  changeTodoTask: (id: string, task: string) => void;
-  changeTodoCompleted: (id: string) => void;
-  deleteTodo: (id: string) => void;
-  editTodo: (id: string, newTask: string) => void;
-  startTodo: (id: string) => void;
-  changeTodoInProgress: (id: string, inProgress: boolean) => void;
-}
+interface TodoListProps extends TodoFunctions {}
 
 const TodoList = ({
-  changeTodoTask,
-  changeTodoCompleted,
-  deleteTodo,
-  editTodo,
-  startTodo,
-  changeTodoInProgress,
-}: TodoListProps) => {
+                    changeTodoTask,
+                    changeTodoCompleted,
+                    deleteTodo,
+                    editTodo,
+                    startTodo,
+                    changeTodoInProgress,
+                  }: TodoListProps) => {
   const { data: todos, isLoading, error } = useQuery({
     queryKey: ['todos'],
     queryFn: fetchTodos,
@@ -28,9 +22,9 @@ const TodoList = ({
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Spinner loading={true} />
-      </div>
+        <div className="flex justify-center items-center h-screen">
+          <Spinner loading={true} />
+        </div>
     );
   }
 
@@ -39,21 +33,21 @@ const TodoList = ({
   }
 
   return (
-    <div className="todo-list">
-      {todos?.map((todo: todoType) => (
-        <div key={todo.id} className="todo-item">
-          <Todo
-            todo={todo}
-            changeTodoTask={changeTodoTask}
-            changeTodoCompleted={changeTodoCompleted}
-            deleteTodo={deleteTodo}
-            editTodo={editTodo}
-            startTodo={startTodo}
-            changeTodoInProgress={changeTodoInProgress}
-          />
-        </div>
-      ))}
-    </div>
+      <div className="todo-list">
+        {todos?.map((todo: todoType) => (
+            <div key={todo.id} className="todo-item">
+              <Todo
+                  todo={todo}
+                  changeTodoTask={changeTodoTask}
+                  changeTodoCompleted={changeTodoCompleted}
+                  deleteTodo={deleteTodo}
+                  editTodo={editTodo}
+                  startTodo={startTodo}
+                  changeTodoInProgress={changeTodoInProgress}
+              />
+            </div>
+        ))}
+      </div>
   );
 };
 

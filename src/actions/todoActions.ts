@@ -13,6 +13,7 @@ export const getTodos = async (id: string): Promise<todoType[]> => {
     task: todo.task,
     completed: todo.completed,
     inProgress: todo.inProgress,
+    userId: todo.userId,
   }));
 };
 
