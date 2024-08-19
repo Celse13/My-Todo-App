@@ -1,4 +1,4 @@
-import { signIn } from "next-auth/react"
+import { signIn } from "../../auth"
 import { Button } from '@/components/ui/button';
 import 'react-toastify/dist/ReactToastify.css';
 

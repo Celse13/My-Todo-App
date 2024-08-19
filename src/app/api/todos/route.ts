@@ -14,5 +14,3 @@ export async function POST(req: NextRequest) {
     const data = await createTodo(task, session?.user?.id!);
     return NextResponse.json({ message: "Task created successfully", data: data });
 }
-
-
