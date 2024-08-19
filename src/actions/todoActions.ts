@@ -1,61 +1,75 @@
 "use server";
 
-import { v4 as uuidv4 } from 'uuid';
-import { eq } from "drizzle-orm";
+import { eq, not } from "drizzle-orm";
 import db from "@/database/drizzle";
-import { todos } from "@/database/schema";
+import {todos} from "@/database/schema";
 import {todoType} from "@/types/todoType";
+import {auth} from "../../auth";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
-export const getTodos = async (id: string): Promise<todoType[]> => {
-  const todosFromDb = await db.select().from(todos).where(eq(todos.userId, id));
-  return todosFromDb.map(todo => ({
-    id: todo.id,
-    task: todo.task,
-    completed: todo.completed,
-    inProgress: todo.inProgress,
-    userId: todo.userId,
-  }));
-};
 
-export const createTodo = async (task: string, userId: string) => {
-  const newTodo = {
-    id: uuidv4(),
-    task,
-    userId,
-    completed: false,
-    inProgress: false,
-  };
-  return await db.insert(todos).values(newTodo);
+export async function getTodoById(id: string) {
+    return await db.query.todos.findFirst({ where: eq(todos.userId, id) });
+}
+
+export const getTodos = async (id: string)=> {
+  const data = await db.select().from(todos).where(eq(todos.userId, id));
+  return data;
 };
 
 
-export const deleteTodo = async (id: string) => {
-  return await db.delete(todos).where(eq(todos.id, id));
-};
 
-export const editTodo = async (id: string, task: string): Promise<{ task: string }> => {
-  await db.update(todos).set({ task }).where(eq(todos.id, id));
-  const updatedTodo = await getTodoById(id);
-  return updatedTodo!;
-};
-
-
-export const editTodoStatus = async (id: string, updates: Partial<{ completed: boolean }>) => {
-  return (await db
-      .update(todos)
-      .set(updates)
-      .where(eq(todos.id, id)));
+export const createTodo = async (task: string) => {
+  const session = await auth();
+  if (!session?.user.id) {
+    redirect("/");
+  }
+  await db.insert(todos).values({
+        task,
+        userId: session?.user?.id,
+        completed: false,
+        inProgress: false,
+  });
 };
 
 
-export const toggleTodoInProgress = async (id: string, inProgress: boolean) => {
-  return (await db
-      .update(todos)
-      .set({ inProgress })
-      .where(eq(todos.id, id)));
+export const deleteTodo = async (id: number) => {
+    await db.delete(todos).where(eq(todos.id, id));
+    revalidatePath("/todos");
 };
 
-export const getTodoById = async (id: string): Promise<todoType | null> => {
-  const result = await db.select().from(todos).where(eq(todos.id, id));
-  return result.length ? result[0] : null;
+export const updateTodo = async (id: number, task?: string)=> {
+    if (!task) {
+        throw new Error("Missing values to update");
+    }
+    const updates: Partial<{task: string}> = {};
+
+    if (task) {
+        updates.task = task;
+    };
+
+    await db.update(todos).set(updates).where(eq(todos.id, id));
+    revalidatePath('/todos')
+};
+
+
+export const toggleTodoInProgress = async (id: number) => {
+    await db
+        .update(todos)
+            .set({
+                inProgress: not(todos.inProgress)
+            })
+            .where(eq(todos.id, id));
+    revalidatePath("/");
+};
+
+export const toggleTodoCompletedStatus = async (id: number) => {
+    await db
+        .update(todos)
+            .set({
+                completed: not(todos.completed)
+            })
+            .where(eq(todos.id, id));
+    revalidatePath("/");
 };

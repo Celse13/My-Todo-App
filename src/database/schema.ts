@@ -1,56 +1,46 @@
-import { uuid, text, pgTable, boolean, timestamp, integer, primaryKey } from "drizzle-orm/pg-core";
+import { serial, text, pgTable, boolean, timestamp, integer, primaryKey } from "drizzle-orm/pg-core";
 import { v4 as uuidv4 } from "uuid";
 import { relations } from 'drizzle-orm';
 import type { AdapterAccountType } from "next-auth/adapters";
 
 
 
-const users = pgTable("users", {
-    id: uuid("id").default(uuidv4()).primaryKey(),
+export const users = pgTable("user", {
+    id: text("id")
+        .primaryKey()
+        .$defaultFn(() => crypto.randomUUID()),
     name: text("name"),
     email: text("email").unique(),
-    emailVerified: boolean("emailVerified"),
+    emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
 });
 
-const todos = pgTable("todoTasks", {
-    id: uuid("id").default(uuidv4()).primaryKey(),
+
+export const todos = pgTable("todos", {
+    id: serial("id").primaryKey(),
     task: text("task").notNull(),
     completed: boolean("completed").default(false).notNull(),
     inProgress: boolean('inProgress').default(false).notNull(),
-    userId: uuid('userId').notNull().references(() => users.id)
+    userId: text('id').notNull().references(() => users.id)
 });
 
-const sessions = pgTable('sessions', {
-   id: uuid('id').default(uuidv4()).primaryKey(),
-   sessionToken: text('sessionToken').unique().notNull(),
-   userId: uuid('userId').notNull().references(() => users.id),
-   expires: timestamp('expires', { precision: 3 }).notNull()
-});
-
-const usersRelations = relations(users, ({ many }) => ({
+export const userRelations = relations(users, ({ many }) => ({
     todos: many(todos),
-    sessions: many(sessions)
 }));
 
-const todosRelations = relations(todos, ({ one }) => ({
+
+
+export const todoRelations = relations(todos, ({ one }) => ({
     user: one(users, {
         fields: [todos.userId],
-        references: [users.id]
-    })
+        references: [users.id],
+    }),
 }));
 
-const sessionsRelations = relations(sessions, ({ one }) => ({
-    user: one(users, {
-        fields: [sessions.userId],
-        references: [users.id]
-    })
-}));
-
-const accounts = pgTable(
+export const accounts = pgTable(
     "account",
     {
-        userId: uuid("id")
+        userId: text("userId")
             .notNull()
             .references(() => users.id, { onDelete: "cascade" }),
         type: text("type").$type<AdapterAccountType>().notNull(),
@@ -69,14 +59,35 @@ const accounts = pgTable(
             columns: [account.provider, account.providerAccountId],
         }),
     })
-);
+)
 
+export const sessions = pgTable("session", {
+    sessionToken: text("sessionToken").primaryKey(),
+    userId: text("userId")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
+})
 
-const authenticators = pgTable(
+export const verificationTokens = pgTable(
+    "verificationToken",
+    {
+        identifier: text("identifier").notNull(),
+        token: text("token").notNull(),
+        expires: timestamp("expires", { mode: "date" }).notNull(),
+    },
+    (verificationToken) => ({
+        compositePk: primaryKey({
+            columns: [verificationToken.identifier, verificationToken.token],
+        }),
+    })
+)
+
+export const authenticators = pgTable(
     "authenticator",
     {
         credentialID: text("credentialID").notNull().unique(),
-        id: uuid("id")
+        userId: text("userId")
             .notNull()
             .references(() => users.id, { onDelete: "cascade" }),
         providerAccountId: text("providerAccountId").notNull(),
@@ -88,12 +99,7 @@ const authenticators = pgTable(
     },
     (authenticator) => ({
         compositePK: primaryKey({
-            columns: [authenticator.id, authenticator.credentialID],
-            name: "authenticator_id_credentialid_pk"
+            columns: [authenticator.userId, authenticator.credentialID],
         }),
     })
-);
-
-
-export { users, todos, sessions, authenticators, accounts, usersRelations, todosRelations, sessionsRelations };
-
+)

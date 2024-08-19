@@ -1,4 +1,4 @@
-import { deleteTodo, getTodoById, editTodo} from "@/actions/todoActions";
+import { deleteTodo, getTodoById, updateTodo} from "@/actions/todoActions";
 
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -14,7 +14,7 @@ export const GET = async (req: NextRequest, { params }: {params: {id: string }})
 
 export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
     const { task }: { task: string } = await req.json();
-    const returnedTodo = await editTodo(params.id, task);
+    const returnedTodo = await updateTodo(params.id, task);
     return NextResponse.json(
         {
             message: "Todo updated successfully",

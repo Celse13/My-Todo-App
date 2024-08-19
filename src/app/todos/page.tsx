@@ -6,7 +6,6 @@ import TodoList from "@/components/TodoList";
 import Aside from "@/components/Aside";
 import { FaUserCircle } from "react-icons/fa";
 import { useSession } from "next-auth/react";
-import Spinner from '@/components/Spinner';
 
 export default function ClientComponent() {
   const [isAsideVisible, setIsAsideVisible] = useState(false);

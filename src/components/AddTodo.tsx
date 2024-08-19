@@ -9,14 +9,15 @@ const AddTodo = () => {
   const [task, setTask] = useState("");
   const queryClient = useQueryClient();
 
-  const { mutateAsync: addTodoMutation } = useMutation({
+  const { mutate }  = useMutation({
     mutationFn: addTodo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['todos'] });
       toast.success('Task added successfully');
       setTask('');
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error('Error adding task:', error);
       toast.error('Error adding task');
     },
   });
@@ -27,7 +28,7 @@ const AddTodo = () => {
 
   const handleTaskSubmit = async () => {
     try {
-      await addTodoMutation(task);
+      mutate({ task });
     } catch (error: any) {
       console.log(error.message);
     }

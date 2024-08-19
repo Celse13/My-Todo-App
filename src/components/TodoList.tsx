@@ -32,23 +32,27 @@ const TodoList = ({
     return <div>Error loading todos</div>;
   }
 
-  return (
-      <div className="todo-list">
-        {todos?.map((todo: todoType) => (
-            <div key={todo.id} className="todo-item">
-              <Todo
-                  todo={todo}
-                  changeTodoTask={changeTodoTask}
-                  changeTodoCompleted={changeTodoCompleted}
-                  deleteTodo={deleteTodo}
-                  editTodo={editTodo}
-                  startTodo={startTodo}
-                  changeTodoInProgress={changeTodoInProgress}
-              />
-            </div>
-        ))}
-      </div>
-  );
+    return (
+        <div className="todo-list">
+            {Array.isArray(todos) && todos.length > 0 ? (
+                todos.map((todo: todoType) => (
+                    <div key={todo.id} className="todo-item">
+                        <Todo
+                            todo={todo}
+                            changeTodoTask={changeTodoTask}
+                            changeTodoCompleted={changeTodoCompleted}
+                            deleteTodo={deleteTodo}
+                            editTodo={editTodo}
+                            startTodo={startTodo}
+                            changeTodoInProgress={changeTodoInProgress}
+                        />
+                    </div>
+                ))
+            ) : (
+                <div>No tasks to display</div>
+            )}
+        </div>
+    );
 };
 
 export default TodoList;

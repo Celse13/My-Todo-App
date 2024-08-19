@@ -6,3 +6,8 @@ export type todoType = {
     userId: string,
 
 }
+
+
+export type createType = {
+    task: string,
+}
