@@ -4,6 +4,7 @@ export type todoType = {
     completed: boolean;
     inProgress: boolean;
     userId: string,
+    todos?: []
 
 }
 

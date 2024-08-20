@@ -4,13 +4,13 @@ import "dotenv/config";
 import { todoType } from "@/types/todoType";
 import { createType } from "@/types/todoType";
 
-const API_URL = process.env.API_URL || "";
+// const API_URL = process.env.API_URL || "";
 
 export const fetchTodos = async () => {
     try {
-        const response = await axios.get<todoType[]>('/api/todos');
-        console.log('response of data', response.data)
-        return response.data;
+        const { data } = await axios.get<todoType>('/api/todos');
+        console.log('response of data', data)
+        return data;
     } catch (error: any) {
         console.log(error);
     }

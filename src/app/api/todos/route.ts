@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     const todos = await getTodos(session?.user.id);
     return NextResponse.json({
         status: 200,
-        todos,
+        todos:todos,
     });
 }
 

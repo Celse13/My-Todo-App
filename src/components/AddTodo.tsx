@@ -35,7 +35,7 @@ const AddTodo = () => {
   };
 
   return (
-    <div className="add-todo flex justify-center items-center">
+    <div className="add-todo p-4 bg-white shadow-md rounded-lg mb-4 mt-4 flex-grow max-w-4xl mx-auto">
       <input
         type="text"
         value={task}
