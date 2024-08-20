@@ -21,7 +21,7 @@ export const todos = pgTable("todos", {
     task: text("task").notNull(),
     completed: boolean("completed").default(false).notNull(),
     inProgress: boolean('inProgress').default(false).notNull(),
-    userId: text('id').notNull().references(() => users.id)
+    userId: text('user_id').notNull().references(() => users.id)
 });
 
 export const userRelations = relations(users, ({ many }) => ({

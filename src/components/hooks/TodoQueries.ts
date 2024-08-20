@@ -2,13 +2,19 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import "dotenv/config";
 import { todoType } from "@/types/todoType";
-import {createType} from "@/types/todoType";
+import { createType } from "@/types/todoType";
 
 const API_URL = process.env.API_URL || "";
 
 export const fetchTodos = async () => {
-    const res = await axios.get<todoType[]>('/api/todos');
-    return res.data;
+    try {
+        const response = await axios.get<todoType[]>('/api/todos');
+        console.log('response of data', response.data)
+        return response.data;
+    } catch (error: any) {
+        console.log(error);
+    }
+
 };
 
 
@@ -22,13 +28,22 @@ export const addTodo = async (task: createType) => {
     }
 };
 
-export const updateTodo = async (todo: todoType): Promise<todoType> => {
-    const response = await axios.put(`${API_URL}/todos/${todo.id}`, todo);
+export const updateTodo = async (id: number, updates: { task: string }) => {
+    const response = await axios.put(`/api/todos/${id}`, updates);
     return response.data;
 };
 
-export const deleteTodo = async (id: string): Promise<void> => {
-    await axios.delete(`${API_URL}/todos/${id}`);
+export const deleteTodo = async (id: number): Promise<void> => {
+    await axios.delete(`/api/todos/${id}`);
 };
 
 
+export const toggleTodoStatus = async (id: number, toggle : { completed: boolean}) => {
+    const response = await axios.put(`/api/todos/${id}`, toggle);
+    return response;
+};
+
+export const toggleTodoProgressStatus = async (id: number, toggle : { inProgress: boolean}) => {
+    const response = await axios.put(`/api/todos/${id}`, toggle);
+    return response;
+}

@@ -51,14 +51,7 @@ export default function ClientComponent() {
                   <span className="block sm:inline"> {deletionMessage}</span>
                 </div>
               )}
-              <TodoList
-                changeTodoTask={async (id: string, task: string) => {}}
-                changeTodoCompleted={async (id: string) => {}}
-                deleteTodo={async (id: string) => confirmDeleteTodo(id)}
-                editTodo={async () => {}}
-                startTodo={async () => {}}
-                changeTodoInProgress={async (id: string, inProgress: boolean) => {}}
-              />
+              <TodoList/>
             </div>
           </section>
         </div>
