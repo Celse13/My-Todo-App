@@ -1,38 +1,60 @@
-import { deleteTodo, getTodoById, updateTodo} from "@/actions/todoActions";
+import {deleteTodo, getTodoId, toggleTodoCompletedStatus, updateTodo, } from "@/actions/todoActions";
 
 import { NextRequest, NextResponse } from 'next/server';
 
+import {auth} from "../../../../../auth";
+import { redirect } from 'next/navigation';
 
-export const GET = async (req: NextRequest, { params }: {params: {id: string }}) => {
-    const todo = await getTodoById(params.id);
-    if (!todo) {
-        return NextResponse.json({ message: "todo not found" }, { status: 404 });
-    } else {
-        return NextResponse.json({ message: "todo found", data: todo });
+export const DELETE = async ( req: NextRequest, { params }: { params: { id: number } }
+) => {
+    try {
+        const session = await auth();
+        if (!session?.user.id) {
+            return NextResponse.json({
+                message: 'Unauthorized'
+            })
+        }
+        const todoId = Number(params.id);
+        const todo = await getTodoId(todoId);
+        if (!todo) {
+            return NextResponse.json({ message: "Todo not found" }, { status: 404 });
+        }
+        await deleteTodo(todoId);
+        return NextResponse.json({ message: "Todo deleted successfully" });
+    } catch (error: any) {
+        return NextResponse.json({ message: error.message });
     }
 }
 
-export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const { task }: { task: string } = await req.json();
-    const returnedTodo = await updateTodo(params.id, task);
-    return NextResponse.json(
-        {
-            message: "Todo updated successfully",
-            data: returnedTodo,
-        },
-        { status: 201 }
-    );
-}
 
-export const DELETE = async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const todo = await getTodoById(params.id);
+export const PATCH = async ( req: NextRequest, { params }: { params: { id: string } }
+) => {
+    const todoId = Number(params.id);
+    const todo = await getTodoId(todoId);
+
     if (!todo) {
         return NextResponse.json({ message: "Todo not found" }, { status: 404 });
     }
-    const response = await deleteTodo(params.id);
-    return NextResponse.json({
-        message: "Todo deleted successfully",
-        data: response,
-    });
+
+    const { task } = await req.json();
+    if (!task) {
+        return NextResponse.json(
+            { message: "No values to update" },
+            { status: 400 }
+        );
+    }
+
+    await updateTodo(todoId, task);
+    return NextResponse.json({ message: "Todo updated successfully" });
 }
 
+export const PUT = async ( req: NextRequest, { params }: { params: { id: string } }
+) =>{
+    const todoId = Number(params.id);
+    const todo = await getTodoId(todoId);
+    if (!todo) {
+        return NextResponse.json({ message: "Todo not found" }, { status: 404 });
+    }
+    await toggleTodoCompletedStatus(todoId);
+    return NextResponse.json({ message: "Todo toggled successfully" });
+}

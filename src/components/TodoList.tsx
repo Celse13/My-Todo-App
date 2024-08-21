@@ -6,20 +6,22 @@ import Spinner from "@/components/Spinner";
 import { ToastContainer, toast } from "react-toastify";
 import { todoType } from '@/types/todoType';
 import { Checkbox } from "@/components/ui/checkbox";
+import * as Dialog from '@radix-ui/react-dialog';
+import 'react-toastify/dist/ReactToastify.css'; // Ensure you have this import
 
 const TodoList = () => {
   const [id, setId] = useState<number | null>(null);
   const [idUpdate, setIdUpdate] = useState<number | null>(null);
   const [task, setTask] = useState<string>('');
   const [isEditing, setIsEditing] = useState<number | null>(null); // Track which task is being edited
+  const [showDialog, setShowDialog] = useState<boolean>(false); // State to manage dialog visibility
+  const [todoToDelete, setTodoToDelete] = useState<number | null>(null); // State to manage which todo to delete
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
     queryFn: fetchTodos,
     queryKey: ['todos'],
   });
-
-  console.log('fetching', data);
 
   const { mutate: updateMutation } = useMutation({
     mutationFn: ({ id, data }: { id: number; data: { task: string } }) =>
@@ -81,12 +83,19 @@ const TodoList = () => {
   };
 
   const handleDelete = (id: number) => {
-    setId(id);
-    deleteMutation(id, {
-      onSettled: () => {
-        setId(null);
-      }
-    });
+    setTodoToDelete(id);
+    setShowDialog(true);
+  };
+
+  const confirmDelete = () => {
+    if (todoToDelete !== null) {
+      deleteMutation(todoToDelete, {
+        onSettled: () => {
+          setTodoToDelete(null);
+          setShowDialog(false);
+        }
+      });
+    }
   };
 
   const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -135,7 +144,7 @@ const TodoList = () => {
                     onChange={handleTaskChange}
                     onBlur={() => handleTaskSubmit(todo)}
                     autoFocus
-                    className="px-2 py-1 border-none focus:outline-none"
+                    className="px-2 border-none focus:outline-none w-full bg-gray-100"
                 />
             ) : (
                 <span
@@ -143,7 +152,7 @@ const TodoList = () => {
                       setIsEditing(todo.id);
                       setTask(todo.task);
                     }}
-                    className="todo-task cursor-pointer font-medium text-gray-800"
+                    className={`cursor-pointer font-medium text-gray-800 bg-gray-100 w-full ${todo.completed ? 'line-through' : ''}`}
                 >
                 {todo.task}
               </span>
@@ -158,7 +167,7 @@ const TodoList = () => {
               onClick={() => handleStartPauseClick(todo)}
             >
               {todo.inProgress ? <FaPause /> : <FaPlay />}
-            </button>
+              </button>
             <button
               className="todo-button p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
               onClick={() => handleDelete(todo.id)}
@@ -170,6 +179,18 @@ const TodoList = () => {
       </div>
     ))}
     <ToastContainer />
+
+      <Dialog.Root open={showDialog} onOpenChange={setShowDialog}>
+        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+        <Dialog.Content className="fixed bg-[#F5F5F5] p-4 rounded-md shadow-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <Dialog.Title className="text-lg font-medium">Confirm Delete</Dialog.Title>
+          <Dialog.Description className="mt-2">Are you sure you want to delete this todo?</Dialog.Description>
+          <div className="mt-4 flex justify-end space-x-2">
+            <button onClick={() => setShowDialog(false)} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
+            <button onClick={confirmDelete} className="px-4 py-2 bg-red-500 text-white rounded">Yes</button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Root>
   </div>
 
   );

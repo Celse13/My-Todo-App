@@ -13,6 +13,10 @@ export async function getTodoById(id: string) {
     return await db.query.todos.findFirst({ where: eq(todos.userId, id) });
 }
 
+export const getTodoId = async (id: number) => {
+    return await db.query.todos.findFirst({ where: eq(todos.id, id) });
+}
+
 export const getTodos = async (id: string)=> {
   const data = await db.select().from(todos).where(eq(todos.userId, id));
   return data;
