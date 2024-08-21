@@ -29,7 +29,7 @@ export const addTodo = async (task: createType) => {
 };
 
 export const updateTodo = async (id: number, updates: { task: string }) => {
-    const response = await axios.put(`/api/todos/${id}`, updates);
+    const response = await axios.patch(`/api/todos/${id}`, updates);
     return response.data;
 };
 

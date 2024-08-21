@@ -4,6 +4,8 @@ import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { FaPlus } from "react-icons/fa";
 import { addTodo } from "@/components/hooks/TodoQueries";
+import { todoSchema } from "@/lib/todoSchema";
+import { z } from "zod";
 
 const AddTodo = () => {
   const [task, setTask] = useState("");
@@ -28,9 +30,18 @@ const AddTodo = () => {
 
   const handleTaskSubmit = async () => {
     try {
+      // Validate the task using zod schema
+      todoSchema.parse({ task });
       mutate({ task });
     } catch (error: any) {
-      console.log(error.message);
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        console.error("Validation failed", error.errors);
+        toast.error("Task validation failed: " + error.errors.map(e => e.message).join(", "));
+      } else {
+        console.error("Error adding task:", error);
+        toast.error("Error adding task");
+      }
     }
   };
 

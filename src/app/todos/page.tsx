@@ -1,23 +1,18 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import AddTodo from "@/components/AddTodo";
 import TodoList from "@/components/TodoList";
-import Aside from "@/components/Aside";
 import { FaUserCircle } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import Navbar from "@/components/Navbar";
 
 export default function ClientComponent() {
-  const [isAsideVisible, setIsAsideVisible] = useState(false);
   const [deletionMessage, setDeletionMessage] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
   const { data, status } = useSession();
 
-  const toggleAside = () => {
-    setIsAsideVisible(!isAsideVisible);
-  };
 
   const confirmDeleteTodo = (id: string) => {
     setTodoToDelete(id);
@@ -40,7 +35,6 @@ export default function ClientComponent() {
           </header>
           <AddTodo />
           <TodoList />
-
       </div>
     </main>
   );
