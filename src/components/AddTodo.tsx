@@ -46,21 +46,21 @@ const AddTodo = () => {
   };
 
   return (
-    <div className="add-todo p-4 bg-white shadow-md rounded-lg mb-4 mt-4 flex-grow max-w-4xl mx-auto">
-      <input
-        type="text"
-        value={task}
-        onChange={handleTaskChange}
-        placeholder="Add a new task"
-        className="add-todo-input flex-grow focus:outline-none focuse:border-none"
-      />
-      <button onClick={handleTaskSubmit} className="add-todo-button">
-        <div className="flex items-center">
-          <FaPlus className="icon-white mr-2"/> Add task
-        </div>
-      </button>
-      <ToastContainer/>
-    </div>
+      <div className="add-todo p-4 bg-white shadow-md rounded-lg mb-4 mt-4 flex-grow max-w-4xl mx-auto w-full sm:w-3/4 md:w-2/3 lg:w-1/2">
+        <input
+            type="text"
+            value={task}
+            onChange={handleTaskChange}
+            placeholder="Add a new task"
+            className="add-todo-input flex-grow focus:outline-none focus:border-none w-full sm:w-auto"
+        />
+        <button onClick={handleTaskSubmit} className="add-todo-button mt-2 w-full flex justify-start">
+          <div className="flex items-center justify-center">
+            <FaPlus className="icon-white mr-2"/> Add task
+          </div>
+        </button>
+        <ToastContainer/>
+      </div>
   );
 };
 
