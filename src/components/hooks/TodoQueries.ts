@@ -24,7 +24,6 @@ export const addTodo = async (task: createType) => {
         return response.data;
     } catch (error: any) {
         console.error('Error adding todo:', error);
-        throw error;
     }
 };
 

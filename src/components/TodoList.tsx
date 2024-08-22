@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, FocusEvent } from "react";
 import { FaTrash, FaPlay, FaPause } from "react-icons/fa";
 import { updateTodo, deleteTodo, fetchTodos, toggleTodoStatus, toggleTodoProgressStatus } from "@/components/hooks/TodoQueries";
 import Spinner from "@/components/Spinner";
@@ -9,6 +9,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import * as Dialog from '@radix-ui/react-dialog';
 import 'react-toastify/dist/ReactToastify.css';
 import EmptyState from "@/components/Motion";
+import { todoSchema } from "@/lib/todoSchema";
+import { z } from "zod";
 
 const TodoList = () => {
   const [id, setId] = useState<number | null>(null);
@@ -18,16 +20,17 @@ const TodoList = () => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [todoToDelete, setTodoToDelete] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [errors, setErrors] = useState<{ [key: number]: string | null }>({});
   const queryClient = useQueryClient();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error: fetchError } = useQuery({
     queryFn: fetchTodos,
     queryKey: ['todos'],
   });
 
   const { mutate: updateMutation } = useMutation({
     mutationFn: ({ id, data }: { id: number; data: { task: string } }) =>
-      updateTodo(id, data),
+        updateTodo(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['todos'],
@@ -44,19 +47,33 @@ const TodoList = () => {
     }
   });
 
-  const handleUpdate = (id: number, updatedData: { task: string }) => {
-    setIdUpdate(id);
-    updateMutation({ id, data: updatedData }, {
-      onSettled: () => {
-        setIdUpdate(null);
-        setIsEditing(null);
+  const validateTask = (id: number, task: string) => {
+    try {
+      todoSchema.parse({ task });
+      setErrors(prevErrors => ({ ...prevErrors, [id]: null }));
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        setErrors(prevErrors => ({ ...prevErrors, [id]: error.errors.map(e => e.message).join(", ") }));
       }
-    });
+    }
+  };
+
+  const handleUpdate = (id: number, updatedData: { task: string }) => {
+    validateTask(id, updatedData.task);
+    if (!errors[id]) {
+      setIdUpdate(id);
+      updateMutation({ id, data: updatedData }, {
+        onSettled: () => {
+          setIdUpdate(null);
+          setIsEditing(null);
+        }
+      });
+    }
   };
 
   const { mutate: toggleStatusMutation } = useMutation({
     mutationFn: ({ id, toggle }: { id: number; toggle: { completed: boolean, inProgress: boolean } }) =>
-      toggleTodoStatus(id, toggle),
+        toggleTodoStatus(id, toggle),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['todos'],
@@ -67,7 +84,7 @@ const TodoList = () => {
 
   const { mutate: toggleInProgressMutation } = useMutation({
     mutationFn: ({ id, toggle }: { id: number; toggle: { inProgress: boolean } }) =>
-      toggleTodoProgressStatus(id, toggle),
+        toggleTodoProgressStatus(id, toggle),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['todos'],
@@ -102,17 +119,24 @@ const TodoList = () => {
     }
   };
 
-  const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setTask(e.target.value);
+  const handleTaskChange = (id: number, e: ChangeEvent<HTMLInputElement>) => {
+    const newTask = e.target.value;
+    setTask(newTask);
+    validateTask(id, newTask);
   };
 
-  const handleTaskSubmit = async (todo: todoType) => {
-    await updateMutation({ id: todo.id, data: { task } });
-    setIsEditing(null);
+  const handleTaskBlur = (id: number) => {
+    if (!errors[id]) {
+      handleUpdate(id, { task });
+    }
+    setErrors(prevErrors => ({ ...prevErrors, [id]: null }));
   };
 
   const handleStartPauseClick = async (todo: todoType) => {
-    await toggleStatusMutation({ id: todo.id, toggle: { completed: todo.completed, inProgress: !todo.inProgress } });
+    const toggle = { completed: todo.completed, inProgress: !todo.inProgress };
+    if (toggle) {
+      await toggleStatusMutation({ id: todo.id, toggle });
+    }
   };
 
   if (isLoading) {
@@ -123,7 +147,7 @@ const TodoList = () => {
     );
   }
 
-  if (error) {
+  if (fetchError) {
     return <div>Error loading todos</div>;
   }
 
@@ -144,8 +168,8 @@ const TodoList = () => {
                           <input
                               type="text"
                               value={task}
-                              onChange={handleTaskChange}
-                              onBlur={() => handleTaskSubmit(todo)}
+                              onChange={(e) => handleTaskChange(todo.id, e)}
+                              onBlur={() => handleTaskBlur(todo.id)}
                               autoFocus
                               className="px-2 border-none focus:outline-none w-full bg-gray-100"
                           />
@@ -179,6 +203,7 @@ const TodoList = () => {
                       </button>
                     </div>
                   </div>
+                  {errors[todo.id] && <p className="text-red-500 mt-2">{errors[todo.id]}</p>}
                 </div>
             ))
         )}

@@ -35,6 +35,8 @@ export const createTodo = async (task: string) => {
         completed: false,
         inProgress: false,
   });
+  revalidatePath('/todos')
+
 };
 
 
@@ -65,7 +67,7 @@ export const toggleTodoInProgress = async (id: number) => {
                 inProgress: not(todos.inProgress)
             })
             .where(eq(todos.id, id));
-    revalidatePath("/");
+    revalidatePath("/todos");
 };
 
 export const toggleTodoCompletedStatus = async (id: number) => {
@@ -75,5 +77,5 @@ export const toggleTodoCompletedStatus = async (id: number) => {
                 completed: not(todos.completed)
             })
             .where(eq(todos.id, id));
-    revalidatePath("/");
+    revalidatePath("/todos");
 };
