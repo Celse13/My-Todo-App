@@ -9,6 +9,7 @@ interface TodoListProps {
   deleteTodo: (id: string) => void;
   editTodo: (id: string, newTask: string) => void;
   startTodo: (id: string) => void;
+  changeTodoInProgress: (id: string, inProgress: boolean) => void;
 }
 
 const TodoList = ({
@@ -17,7 +18,8 @@ const TodoList = ({
   changeTodoCompleted,
   deleteTodo,
   editTodo,
-  startTodo
+  startTodo,
+  changeTodoInProgress,
 }: TodoListProps) => {
   return (
     <div className="todo-list">
@@ -30,6 +32,7 @@ const TodoList = ({
             deleteTodo={deleteTodo}
             editTodo={editTodo}
             startTodo={startTodo}
+            changeTodoInProgress={changeTodoInProgress}
           />
         </div>
       ))}

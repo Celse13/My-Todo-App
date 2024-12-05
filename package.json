@@ -1,6 +1,5 @@
 {
   "name": "To-Do App",
-  "type": "module",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.4.2",
     "@heroicons/react": "^1.0.6",
     "@hookform/resolvers": "^3.9.0",
     "@neondatabase/serverless": "^0.9.4",
@@ -18,7 +18,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@react-oauth/google": "^0.12.1",
     "@shadcn/ui": "^0.0.4",
-    "@tanstack/react-query": "^5.51.18",
+    "@tanstack/react-query": "^5.51.21",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -28,11 +28,12 @@
     "google@latest": "link:react-oauth/google@latest",
     "lucide-react": "^0.416.0",
     "next": "14.2.5",
+    "next-auth": "5.0.0-beta.20",
     "pg": "^8.12.0",
     "react": "^18.3.1",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.3.1",
-    "react-hook-form": "^7.52.1",
+    "react-hook-form": "^7.52.2",
     "react-icons": "^5.2.1",
     "react-spinners": "^0.14.1",
     "react-toastify": "^10.0.5",
@@ -44,7 +45,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.14.13",
+    "@types/node": "^20.14.14",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/uuid": "^10.0.0",
